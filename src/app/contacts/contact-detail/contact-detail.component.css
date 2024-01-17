@@ -1,0 +1,12 @@
+.panel-image-edit-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+}
+
+.edit-button-container a{
+    margin-left: 4px;
+    max-height: 100px;
+
+}

@@ -1,0 +1,12 @@
+.panel-heading {
+    display: flex;
+    justify-content: space-between;
+}
+
+.panel-h2 {
+    margin: 0;
+}
+
+.panel-button {
+    height: 100%;
+}
