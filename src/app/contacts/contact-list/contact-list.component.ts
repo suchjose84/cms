@@ -18,7 +18,7 @@ export class ContactListComponent implements OnInit{
         name: "R Kent Jackson",
         email: "jacksonk@byui.edu",
         phone: "208-496-3771",
-        imageUrl: "../../assets/images/jacksonk.jpg",
+        imageUrl: "/assets/images/jacksonk.jpg",
         group: null
       },
       {
