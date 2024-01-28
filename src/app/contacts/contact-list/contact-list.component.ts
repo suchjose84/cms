@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 
 import Contact from '../contact.model';
 
@@ -9,7 +9,8 @@ import Contact from '../contact.model';
 })
 export class ContactListComponent implements OnInit{
 
-  contacts: Contact[] = [];
+  @Input() contacts: Contact[] = [];
+  @Output() selectedContactEvent: EventEmitter<Contact> = new EventEmitter<Contact>();
   
   ngOnInit(){
     this.contacts = [
@@ -30,7 +31,10 @@ export class ContactListComponent implements OnInit{
         group: null
       }
     ]
-    
   }
+  onSelected(contact: Contact) {
+    this.selectedContactEvent.emit(contact);
+  }
+  
 
 }
