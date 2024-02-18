@@ -8,6 +8,7 @@ import Contact from './contact.model';
 export class ContactService {
   contacts: Contact[] = [];
   contactSelectedEvent = new EventEmitter<Contact>();
+  contactChangedEvent = new EventEmitter<Contact[]>();
 
   constructor() {
     this.contacts = MOCKCONTACTS;
@@ -23,6 +24,21 @@ export class ContactService {
     return contact ? { ...contact } : null; //returns the contact object using the spread operator if it's truthy
 
   }
+
+  deleteContact(contact: Contact) {
+    if (!contact) {
+      return;
+    }
+  
+    const index = this.contacts.findIndex(c => c.id === contact.id);
+    if (index === -1) {
+      return;
+    }
+  
+    this.contacts.splice(index, 1);
+    this.contactChangedEvent.emit(this.contacts.slice());
+  }
+  
 
 
 

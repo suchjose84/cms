@@ -4,8 +4,8 @@
       <div class="panel-image-edit-container">
         <img [src]="contact.imageUrl" [alt]="contact.name" class="img-responsive">
         <div class="edit-button-container">
-          <a href="#" class="btn btn-primary" role="button">Edit</a>
-          <a href="#" class="btn btn-danger" role="button">Delete</a>
+          <a [routerLink]="['/contacts', contact.id, 'edit']" class="btn btn-primary" role="button">Edit</a>
+          <a [routerLink]="['/contacts', contact.id]" class="btn btn-danger" role="button" (click)="onDelete()">Delete</a>
         </div>
       </div>
     </div>

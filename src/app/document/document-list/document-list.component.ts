@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import  Document from '../document.model';
+import Document from '../document.model';
 import { DocumentService } from '../document.service';
 
 @Component({
@@ -13,6 +13,9 @@ export class DocumentListComponent implements OnInit{
   constructor(private documentService: DocumentService){}
 
   ngOnInit() {
+    this.documentService.documentChangedEvent.subscribe((documents: Document[]) => {
+      this.documents = documents;
+    });
     this.documents = this.documentService.getDocuments();
     
   }
