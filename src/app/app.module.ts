@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -16,6 +18,11 @@ import { MessageListComponent } from './messages/message-list/message-list.compo
 import { DocumentsComponent } from './document/documents.component';
 import { DropdownDirective } from './shared/dropdown.directive';
 import { AppRoutingModule } from './app-routing.module';
+import { DocumentEditComponent } from './document/document-edit/document-edit.component';
+import { ContactEditComponent } from './contacts/contact-edit/contact-edit.component';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+
+
 
 @NgModule({
   declarations: [
@@ -25,10 +32,12 @@ import { AppRoutingModule } from './app-routing.module';
     ContactListComponent,
     ContactDetailComponent,
     ContactItemComponent,
+    ContactEditComponent,
     DocumentsComponent,
     DocumentListComponent,
     DocumentDetailComponent,
     DocumentItemComponent,
+    DocumentEditComponent,
     MessageItemComponent,
     MessageEditComponent,
     MessageListComponent,
@@ -36,9 +45,13 @@ import { AppRoutingModule } from './app-routing.module';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    DragDropModule
   ],
-  providers: [],
+  providers: [
+    provideAnimationsAsync()
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
