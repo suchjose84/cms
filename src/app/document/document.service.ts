@@ -10,7 +10,7 @@ export class DocumentService {
   documents: Document[] = [];
   maxDocumentId: number;
 
-  documentSelectedEvent = new EventEmitter<Document>();
+  documentSelectedEvent = new Subject<Document>();
   documentListChangedEvent = new Subject<Document[]>();
 
   constructor() {
@@ -25,6 +25,14 @@ export class DocumentService {
   getDocument(id: string): Document | null {
     return this.documents.find(doc => doc.id === id) ?? null;
   }
+  // getDocument(id: string): Document | null {
+  //   const document = this.documents.find(doc => doc.id === id);
+  //   if (!document) {
+  //     console.error(`Document with ID ${id} not found.`);
+  //     return null;
+  //   }
+  //   return document;
+  // }  
 
   addDocument(newDocument: Document): void {
     if (!newDocument) {

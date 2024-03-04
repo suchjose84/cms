@@ -15,7 +15,7 @@ export class DocumentDetailComponent implements OnInit{
 
   constructor(private documentService: DocumentService, private route: ActivatedRoute, private router: Router, private windRefService: WindRefService) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.route.params.subscribe(params => {
       const id = params['id'];
       this.document = this.documentService.getDocument(id);

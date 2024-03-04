@@ -32,20 +32,23 @@ export class DocumentEditComponent implements OnInit{
           return;
         }
         this.originalDocument = this.documentService.getDocument(id);
+        console.log(this.originalDocument);
         if(!this.originalDocument) {
           return;
         }
         this.document = JSON.parse(JSON.stringify(this.originalDocument));
         this.editMode = true;
+        
       }
     );
+    // console.log(this.editMode);
     
   }
 
   onSubmit(form: NgForm) {
     const value = form.value;
     const newDocument = new Document(
-      '', //Placeholder for id (assuming it's auto generated)
+      value.id,
       value.name,
       value.description,
       value.url
@@ -59,6 +62,23 @@ export class DocumentEditComponent implements OnInit{
     this.router.navigate(['/documents']);
 
   }
+  
+
+  // onSubmit(form: NgForm) {
+  //   const value = form.value;
+  //   // Update the properties of the original document directly
+  //   this.originalDocument.name = value.name;
+  //   this.originalDocument.description = value.description;
+  //   this.originalDocument.url = value.url;
+  
+  //   if (this.editMode) {
+  //     this.documentService.updateDocument(this.originalDocument);
+  //   } else {
+  //     this.documentService.addDocument(this.originalDocument);
+  //   }
+  //   this.router.navigate(['/documents']);
+  // }
+  
 
   onCancel() {
     this.router.navigate(['/documents']);

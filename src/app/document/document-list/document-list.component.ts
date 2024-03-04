@@ -26,7 +26,7 @@ export class DocumentListComponent implements OnInit, OnDestroy{
   }
 
   onSelectedDocument(document: Document) {
-    this.documentService.documentSelectedEvent.emit(document);
+    this.documentService.documentSelectedEvent.next(document);
   }
 
   ngOnDestroy() {

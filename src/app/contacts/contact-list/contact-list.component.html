@@ -5,7 +5,7 @@
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-xs-12" cdkDropList [cdkDropListData]="contacts"> 
+            <div class="col-xs-12" cdkDropList [cdkDropListData]="contacts" (cdkDropListDropped)="onDrop($event)"> 
                 <cms-contact-item *ngFor="let contact of contacts" [contact]="contact" cdkDrag></cms-contact-item>
             </div>
         </div>

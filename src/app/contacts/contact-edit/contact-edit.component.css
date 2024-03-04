@@ -31,3 +31,8 @@
   color: darkgrey;
   margin-left: 3rem;
 }
+
+.list-group-item {
+  width: 100%;
+  border: 1px solid green;
+}

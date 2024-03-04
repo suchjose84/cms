@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 
 import Contact from '../contact.model';
 import { ContactService } from '../contact.service';
@@ -25,6 +26,15 @@ export class ContactListComponent implements OnInit, OnDestroy{
   }
   ngOnDestroy(){
     this.subscription.unsubscribe();
+  }
+
+  onDrop(event: CdkDragDrop<Contact[]>) {
+    transferArrayItem(
+      event.previousContainer.data,
+      event.container.data,
+      event.previousIndex,
+      event.currentIndex
+    );
   }
 
 }

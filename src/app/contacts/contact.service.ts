@@ -11,7 +11,7 @@ export class ContactService {
   maxContactId: number;
 
   contactListChangedEvent = new Subject<Contact[]>();
-  contactSelectedEvent = new EventEmitter<Contact>();
+  contactSelectedEvent = new Subject<Contact>();
 
   constructor() {
     this.contacts = MOCKCONTACTS;
@@ -47,17 +47,19 @@ export class ContactService {
     this.contactListChangedEvent.next(contactsListClone);
   }
 
-  updateContact(originalContact: Contact, newContact: Contact): void {
+  updateContact(originalContact: Contact, newContact: Contact) {
     if (!originalContact || !newContact) {
       return;
     }
 
-    const pos = this.contacts.indexOf(originalContact);
+    const pos = this.contacts.findIndex((contact) => contact.id === originalContact.id);
+    console.log(pos);
     if (pos < 0) {
       return;
     }
 
     newContact.id = originalContact.id;
+    console.log(newContact.id);
     this.contacts[pos] = newContact;
     const contactsListClone = this.contacts.slice();
     this.contactListChangedEvent.next(contactsListClone);
@@ -78,7 +80,7 @@ export class ContactService {
   }
 
   getMaxId(): number {
-    let maxId = 0;
+    let maxId = 100;
 
     for (const contact of this.contacts) {
       const currentId = parseInt(contact.id, 10);

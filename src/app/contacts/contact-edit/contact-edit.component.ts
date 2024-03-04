@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 
 import Contact from '../contact.model';
 import { ContactService } from '../contact.service';
@@ -49,18 +49,28 @@ export class ContactEditComponent implements OnInit{
 
   onSubmit(form: NgForm) {
     const value = form.value;
-    const newContact = new Contact(
-      '', //Placeholder for id (assuming it's auto generated)
-      value.name,
-      value.email,
-      value.phone,
-      value.imageUrl,
-      value.group
-    );
 
     if(this.editMode) {
+      const newContact = new Contact(
+        this.originalContact.id,
+        value.name,
+        value.email,
+        value.phone,
+        value.imageUrl,
+        this.originalContact.group
+      );
       this.contactService.updateContact(this.originalContact, newContact);
     } else {
+      const newContact = new Contact(
+        '',
+        value.name,
+        value.email,
+        value.phone,
+        value.imageUrl,
+        null
+      )
+      // console.log(newContact.group);
+      console.log(newContact);
       this.contactService.addContact(newContact);
     }
     this.router.navigate(['/contacts']);

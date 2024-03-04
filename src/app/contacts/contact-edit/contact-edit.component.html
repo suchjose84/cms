@@ -54,32 +54,14 @@
           <input
             type="text"
             id="imageUrl"
+            (ngModel)="contact.imageUrl" #imageUrl="ngModel"
+            name="imageUrl"
             class="form-control"
             size="150"
             max="255">
         </div>
       </div>
 
-      <!-- <div class="row">
-        <div class="form-group">
-          <label for="groupList">Group Contacts:</label>
-      
-          <div class="row drop-area" id="groupList" style="min-height: 3rem;" cdkDropList [cdkDropListData]="groupContacts" (cdkDropListDropped)="onDrop($event)">
-            <div *ngFor="let contact of groupContacts; let i = index" cdkDrag>
-              <div class="row">
-                <div class="col-sm-11">
-                  <cms-contact-item [contact]="contact"></cms-contact-item>
-                </div>
-                <div class="col-sm-1">
-                  <button class="btn btn-danger deleteButton" (click)="onRemoveItem(i)">X</button>
-                </div>
-              </div>
-            </div>
-            <span class="dragMsg" *ngIf="groupContacts?.length < 1">Drag contacts into this group</span>
-          </div>
-      
-        </div>
-      </div> -->
       <div class="row">
         <div class="form-group">
           <label for="groupList">Group Contacts:</label>
