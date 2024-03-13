@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ContactDetailComponent implements OnInit{
   @Input() contact: Contact;
+  // contact: Contact;
   contacts: Contact[] = [];
 
   constructor(private contactService: ContactService, private router: Router, private route: ActivatedRoute){}
@@ -19,6 +20,7 @@ export class ContactDetailComponent implements OnInit{
     this.route.params.subscribe(params => {
       const id = params['id'];
       this.contact = this.contactService.getContact(id);
+      console.log(this.contact);
 
     });
     

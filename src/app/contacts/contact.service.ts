@@ -1,7 +1,7 @@
-import { EventEmitter, Injectable } from '@angular/core';
-import { MOCKCONTACTS } from './MOCKCONTACTS';
+import { Injectable } from '@angular/core';
 import Contact from './contact.model';
 import { Subject } from 'rxjs';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -13,26 +13,59 @@ export class ContactService {
   contactListChangedEvent = new Subject<Contact[]>();
   contactSelectedEvent = new Subject<Contact>();
 
-  constructor() {
-    this.contacts = MOCKCONTACTS;
+  constructor(private http: HttpClient) {
     this.maxContactId = this.getMaxId();
 
   }
 
-  getContacts(): Contact[] {
-    return this.contacts.slice();
+  getContacts() {
+    this.http.get<Contact[]>('https://cms-angular-30bbc-default-rtdb.asia-southeast1.firebasedatabase.app/contacts.json')
+    .subscribe({
+      next: (contacts: Contact[]) => {
+        // Sorting function
+        const customSort = (a: Contact, b: Contact) => {
+          const aContainsTeam = a.name.toLowerCase().includes('team');
+          const bContainsTeam = b.name.toLowerCase().includes('team');
+
+          if (aContainsTeam === bContainsTeam) {
+              return a.name.localeCompare(b.name);
+          } else {
+              return aContainsTeam ? 1 : -1;
+          }
+      };
+        this.contacts = contacts;
+        this.maxContactId = this.getMaxId();
+        this.contacts.sort(customSort);
+        this.contactListChangedEvent.next(this.contacts.slice());
+      },
+      error: (error: any) => {
+        console.error('Error fetching contacts: ', error);
+      }
+
+    });
   }
 
-  getContact(id: string): Contact {
-    const contact = this.contacts.find(c => c.id === id);
-    return contact ? { ...contact } : null;
+  storeContacts() {
+    const contactsString = JSON.stringify(this.contacts);
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json'});
 
-  }
-
+    this.http.put('https://cms-angular-30bbc-default-rtdb.asia-southeast1.firebasedatabase.app/contacts.json', contactsString, {headers})
+    .subscribe({
+      next: ()=> {
+        this.contactListChangedEvent.next([...this.contacts]);
   
+      }, error: (error) => {
+        console.error('Error storing contacts: ', error);
+      }
 
-  emitContactListChanged() {
-    this.contactListChangedEvent.next(this.contacts.slice());
+    });
+
+  }
+
+  getContact(id: string): Contact | null {
+    console.log(id);
+    return this.contacts.find(contact => contact.id === id) ?? null;
+
   }
 
   addContact(newContact: Contact): void {
@@ -43,8 +76,7 @@ export class ContactService {
     this.maxContactId++;
     newContact.id = this.maxContactId.toString();
     this.contacts.push(newContact);
-    const contactsListClone = this.contacts.slice();
-    this.contactListChangedEvent.next(contactsListClone);
+    this.storeContacts();
   }
 
   updateContact(originalContact: Contact, newContact: Contact) {
@@ -52,17 +84,14 @@ export class ContactService {
       return;
     }
 
-    const pos = this.contacts.findIndex((contact) => contact.id === originalContact.id);
-    console.log(pos);
+    const pos = this.contacts.indexOf(originalContact);
     if (pos < 0) {
-      return;
+        return;
     }
 
     newContact.id = originalContact.id;
-    console.log(newContact.id);
     this.contacts[pos] = newContact;
-    const contactsListClone = this.contacts.slice();
-    this.contactListChangedEvent.next(contactsListClone);
+    this.storeContacts();
   }
 
   deleteContact(contact: Contact) {
@@ -70,29 +99,29 @@ export class ContactService {
       return;
     }
   
-    const index = this.contacts.findIndex(c => c.id === contact.id);
-    if (index === -1) {
-      return;
+    const pos = this.contacts.indexOf(contact);
+    if (pos < 0) {
+        return;
     }
   
-    this.contacts.splice(index, 1);
-    this.contactListChangedEvent.next(this.contacts.slice());
+    this.contacts.splice(pos, 1);
+    this.storeContacts();
   }
 
   getMaxId(): number {
-    let maxId = 100;
+    let maxId = 0;
 
     for (const contact of this.contacts) {
       const currentId = parseInt(contact.id, 10);
-      if (!isNaN(currentId) && currentId > maxId) {
-        maxId = currentId;
+      if (!isNaN(currentId)) {
+        maxId = Math.max(maxId, currentId);
       }
     }
     return maxId;
-    //aa
   }
 
 
 
 
 }
+

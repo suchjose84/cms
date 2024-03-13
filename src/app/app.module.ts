@@ -21,6 +21,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { DocumentEditComponent } from './document/document-edit/document-edit.component';
 import { ContactEditComponent } from './contacts/contact-edit/contact-edit.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { ContactsFilterPipe } from './contacts/contacts-filter.pipe';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -42,12 +44,14 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     MessageEditComponent,
     MessageListComponent,
     DropdownDirective,
+    ContactsFilterPipe
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    DragDropModule
+    DragDropModule,
+    HttpClientModule
   ],
   providers: [
     provideAnimationsAsync()
