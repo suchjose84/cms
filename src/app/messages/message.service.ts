@@ -17,29 +17,16 @@ export class MessageService {
   }
 
   getMessages() {
-    this.http.get<Message[]>('https://cms-angular-30bbc-default-rtdb.asia-southeast1.firebasedatabase.app/messages.json')
+    this.http.get<Message[]>('http://localhost:4000/messages/')
     .subscribe({
       next: (messages: Message[]) => {
         this.messages = messages;
         this.maxMessageId = this.getMaxId();
-        this.messages.sort((a, b) => a.id.localeCompare(b.id));
         this.messageListChangedEvent.next(this.messages.slice());
+      },
+      error: (error: any) => {
+        console.error('Error fetching messages: ', error);
       }
-    });
-  }
-  
-  storeMessages() {
-    const messagesString = JSON.stringify(this.messages);
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json'});
-    this.http.put<Message[]>('https://cms-angular-30bbc-default-rtdb.asia-southeast1.firebasedatabase.app/messages.json', messagesString, {headers})
-    .subscribe({
-      next: () => {
-        this.messageListChangedEvent.next([...this.messages]);
-
-      }, error: (error) => {
-        console.error('Error storing documents: ', error);
-      }
-
     });
   }
 
@@ -47,17 +34,30 @@ export class MessageService {
     return this.messages.find(doc => doc.id === id) ?? null;
   }
 
-  addMessage(newMessage: Message) {
-    if (!newMessage) {
+  addMessage(message: Message) {
+    if (!message) {
       return;
     }
 
-    this.maxMessageId++;
-    newMessage.id = this.maxMessageId.toString();
-    this.messages.push(newMessage);
-    this.storeMessages();
+    // Clearing id assuming it's a new message
+    message.id = '';
 
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
 
+    // Make HTTP POST request to server
+    this.http.post<{ msge: string, message: Message }>('http://localhost:4000/messages',
+      message,
+      { headers: headers })
+      .subscribe(
+        {
+          next: (responseData) => {
+            this.messages.push(responseData.message);
+            this.messageListChangedEvent.next(this.messages.slice());
+          },
+          error: (error) => {
+            console.error('Error adding message:', error);
+          }
+        });
   }
 
   getMaxId() {

@@ -36,6 +36,7 @@ export class ContactEditComponent implements OnInit{
         return;
       }
       this.originalContact = this.contactService.getContact(id);
+      
       if (!this.originalContact) {
         return;
       }
@@ -47,11 +48,45 @@ export class ContactEditComponent implements OnInit{
     });
   }
 
+  // onSubmit(form: NgForm) {
+  //   const value = form.value;
+
+  //   if(this.editMode) {
+  //     const newContact = new Contact(
+  //       value.originalContact._id,
+  //       value.originalContact.id,
+  //       value.name,
+  //       value.email,
+  //       value.phone,
+  //       value.imageUrl,
+  //       // this.originalContact.group
+  //       value.originalContact.group
+  //     );
+  //     this.contactService.updateContact(this.originalContact, newContact);
+  //   }
+  //   else {
+  //     // const newContact = new Contact(
+  //     //   '',
+  //     //   '',
+  //     //   value.name,
+  //     //   value.email,
+  //     //   value.phone,
+  //     //   value.imageUrl,
+  //     //   null
+  //     // )
+  //     // console.log(newContact.group);
+  //     console.log(newContact);
+  //     this.contactService.addContact(newContact);
+  //   }
+  //   this.router.navigate(['/contacts']);
+
+  // }
   onSubmit(form: NgForm) {
     const value = form.value;
-
+    
     if(this.editMode) {
       const newContact = new Contact(
+        this.originalContact._id,
         this.originalContact.id,
         value.name,
         value.email,
@@ -61,16 +96,17 @@ export class ContactEditComponent implements OnInit{
       );
       this.contactService.updateContact(this.originalContact, newContact);
     } else {
+
       const newContact = new Contact(
-        '',
+        "",
+        "",
         value.name,
         value.email,
         value.phone,
         value.imageUrl,
-        null
-      )
-      // console.log(newContact.group);
-      console.log(newContact);
+        []
+      );
+
       this.contactService.addContact(newContact);
     }
     this.router.navigate(['/contacts']);

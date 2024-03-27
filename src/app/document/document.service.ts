@@ -17,7 +17,7 @@ export class DocumentService {
     this.maxDocumentId = this.getMaxId();
   }
   getDocuments() {
-    this.http.get<Document[]>('https://cms-angular-30bbc-default-rtdb.asia-southeast1.firebasedatabase.app/documents.json')
+    this.http.get<Document[]>('http://localhost:4000/documents')
       .subscribe({
         next: (documents: Document[]) => {
           this.documents = documents;
@@ -31,66 +31,98 @@ export class DocumentService {
       });
   }
 
-  storeDocuments() {
-    const documentsString = JSON.stringify(this.documents);
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json'});
-
-    this.http.put('https://cms-angular-30bbc-default-rtdb.asia-southeast1.firebasedatabase.app/documents.json', documentsString, {headers})
-    .subscribe({
-      next: ()=> {
-        this.documentListChangedEvent.next([...this.documents]);
-  
-      }, error: (error) => {
-        console.error('Error storing documents: ', error);
-      }
-
-    });
-
-  }
-
   getDocument(id: string): Document | null {
     return this.documents.find(doc => doc.id === id) ?? null;
-  } 
-
-  addDocument(newDocument: Document): void {
-    if (!newDocument) {
-      return;
-    }
-
-    this.maxDocumentId++;
-    newDocument.id = this.maxDocumentId.toString();
-    this.documents.push(newDocument);
-    this.storeDocuments();
   }
 
-  updateDocument(originalDocument: Document, newDocument: Document): void {
+  addDocument(document: Document) {
+    if (!document) {
+      return;
+    }
+    document.id = "";
+  
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+  
+    // Make HTTP POST request to server
+    this.http.post<{ message: string, document: Document }>('http://localhost:4000/documents',
+      document,
+      { headers: headers })
+      .subscribe(
+        {
+          next: (responseData)=> {
+            this.documents.push(responseData.document);
+            this.documentListChangedEvent.next(this.documents.slice());
+          },
+          error: (error) => {
+            console.error('Error adding document:', error);
+          }
+        });
+  }
+
+  updateDocument(originalDocument: Document, newDocument: Document) {
     if (!originalDocument || !newDocument) {
-        return;
+      return;
     }
-
-    const pos = this.documents.indexOf(originalDocument);
-    if (pos < 0) {
-        return;
+    const index = this.documents.findIndex(d => d.id === originalDocument.id);
+  
+    if (index === -1) {
+      return;
     }
-
+  
+    // Preserve the IDs of the original document
     newDocument.id = originalDocument.id;
-    this.documents[pos] = newDocument;
-    this.storeDocuments();
+    newDocument._id = originalDocument._id;
+  
+    // Define headers for HTTP request
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+  
+    // Send PUT request to update document in the database
+    this.http.put(`http://localhost:4000/documents/${originalDocument.id}`, newDocument, { headers })
+      .subscribe({
+        next: () => {
+          this.documents[index] = newDocument;
+          this.documentListChangedEvent.next(this.documents.slice());
+        },
+        error: (error) => {
+          console.error('Error updating document:', error);
+        }
+
+      });
   }
 
   deleteDocument(document: Document) {
+    // Check if the document object is valid
     if (!document) {
-        return;
+      return;
     }
-
-    const pos = this.documents.indexOf(document);
-    if (pos < 0) {
-        return;
+  
+    // Find the index of the document to be deleted in the documents array
+    const index = this.documents.findIndex(d => d.id === document.id);
+  
+    // If the document is not found, return
+    if (index === -1) {
+      return;
     }
+  
+    // Define headers for HTTP request
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+  
+    // Send DELETE request to delete the document from the database
+    this.http.delete(`http://localhost:4000/documents/${document.id}`, { headers })
+      .subscribe(
+        {
+          next: () => {
+            this.documents.splice(index, 1);
+            this.documentListChangedEvent.next(this.documents.slice());
+          },
+          error: (error) => {
+            console.error('Error deleting document:', error);
+            
 
-    this.documents.splice(pos, 1);
-    this.storeDocuments();
-  }
+          }
+        }
+      );
+  }  
 
   getMaxId(): number {
     let maxId = 0;
@@ -103,7 +135,6 @@ export class DocumentService {
     }
     return maxId;
   }
-  //asdfaf
 
 
 }

@@ -1,28 +1,21 @@
 // Get dependencies
-var express = require('express');
-var path = require('path');
-var http = require('http');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const dotenv = require('dotenv');
+dotenv.config();
 
-// import the routing file to handle the default (index) route
-var index = require('./server/routes/app');
+const app = express(); // Create an instance of express
 
-// ... ADD CODE TO IMPORT YOUR ROUTING FILES HERE ... 
-
-var app = express(); // create an instance of express
-
-// Tell express to use the following parsers for POST data
+// Middleware
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(logger('dev'));
 
-app.use(logger('dev')); // Tell express to use the Morgan logger
-
-// Add support for CORS
+// CORS Middleware
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
@@ -36,37 +29,62 @@ app.use((req, res, next) => {
   next();
 });
 
-// Tell express to use the specified director as the
-// root directory for your web site
+/****************ROUTES HERE*************/
+
+app.use('/', require('./server/routes/index'));
+
+
+// Serve static files
 app.use(express.static(path.join(__dirname, 'dist/cms')));
 
-// Tell express to map the default route ('/') to the index route
+// // Use routes
+// app.use('/', require('./server/routes'));
 
-// ... ADD YOUR CODE TO MAP YOUR URL'S TO ROUTING FILES HERE ...
-var index = require('./server/routes/app');
-const messageRoutes = require('./server/routes/messages');
-const contactRoutes = require('./server/routes/contacts');
-const documentRoutes = require('./server/routes/documents');
-
-app.use('/', index);
-app.use('/messages', messageRoutes);
-app.use('/documents', documentRoutes);
-app.use('/contacts', contactRoutes);
-
-
-// Tell express to map all other non-defined routes back to the index page
+// // Handle non-defined routes
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/cms/index.html'));
 });
 
-// Define the port address and tell express to use this port
-const port = process.env.PORT || '3000';
-app.set('port', port);
 
-// Create HTTP server.
-const server = http.createServer(app);
+// import the routing file to handle the default (index) route
+// var index = require('./server/routes/index');
 
-// Tell the server to start listening on the provided port
-server.listen(port, function() {
-  console.log('API running on localhost: ' + port)
+// ... ADD CODE TO IMPORT YOUR ROUTING FILES HERE ...
+// const messageRoutes = require('./server/routes/messages');
+// const contactRoutes = require('./server/routes/contacts');
+// const documentRoutes = require('./server/routes/documents');
+
+// Tell express to map the default route ('/') to the index route
+// app.use('/', require('./server/routes/index'));
+
+
+// ... ADD YOUR CODE TO MAP YOUR URL'S TO ROUTING FILES HERE ...
+// app.use('/messages', messageRoutes);
+// app.use('/contacts', contactRoutes);
+// app.use('/documents', documentRoutes);
+
+
+
+
+
+
+
+
+
+
+// Define port
+const port = process.env.PORT || 3000;
+
+// Start server
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
+
+// Database connection
+const db = require('./server/models');
+db.mongoose.connect(db.url)
+  .then(() => console.log('Connected to the database'))
+  .catch(err => {
+    console.error('Database connection error:', err);
+    process.exit(1); // Terminate the application on database connection error
+  });
