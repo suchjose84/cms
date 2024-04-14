@@ -35,7 +35,7 @@ app.use('/', require('./server/routes/index'));
 
 
 // Serve static files
-app.use(express.static(path.join(__dirname, 'dist/cms')));
+app.use(express.static(path.join(__dirname, 'dist/cms/index.html')));
 
 // // Use routes
 // app.use('/', require('./server/routes'));
