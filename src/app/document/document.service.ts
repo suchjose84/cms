@@ -16,6 +16,7 @@ export class DocumentService {
   constructor(private http: HttpClient) {
     this.maxDocumentId = this.getMaxId();
   }
+  
   getDocuments() {
     this.http.get<Document[]>('http://localhost:4000/documents')
       .subscribe({

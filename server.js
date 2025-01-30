@@ -64,14 +64,6 @@ app.get('*', (req, res) => {
 // app.use('/documents', documentRoutes);
 
 
-
-
-
-
-
-
-
-
 // Define port
 const port = process.env.PORT || 3000;
 
