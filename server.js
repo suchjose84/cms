@@ -46,24 +46,6 @@ app.get('*', (req, res) => {
 });
 
 
-// import the routing file to handle the default (index) route
-// var index = require('./server/routes/index');
-
-// ... ADD CODE TO IMPORT YOUR ROUTING FILES HERE ...
-// const messageRoutes = require('./server/routes/messages');
-// const contactRoutes = require('./server/routes/contacts');
-// const documentRoutes = require('./server/routes/documents');
-
-// Tell express to map the default route ('/') to the index route
-// app.use('/', require('./server/routes/index'));
-
-
-// ... ADD YOUR CODE TO MAP YOUR URL'S TO ROUTING FILES HERE ...
-// app.use('/messages', messageRoutes);
-// app.use('/contacts', contactRoutes);
-// app.use('/documents', documentRoutes);
-
-
 // Define port
 const port = process.env.PORT || 3000;
 
