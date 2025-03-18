@@ -9,6 +9,7 @@ import { HttpClient, HttpHeaders} from '@angular/common/http';
 export class DocumentService {
   documents: Document[] = [];
   maxDocumentId: number;
+  apiUrl: string = "http://localhost:4000/";
 
   documentSelectedEvent = new Subject<Document>();
   documentListChangedEvent = new Subject<Document[]>();
@@ -18,7 +19,7 @@ export class DocumentService {
   }
   
   getDocuments() {
-    this.http.get<Document[]>('http://localhost:4000/documents')
+    this.http.get<Document[]>(this.apiUrl + 'documents')
       .subscribe({
         next: (documents: Document[]) => {
           this.documents = documents;
@@ -45,7 +46,7 @@ export class DocumentService {
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
   
     // Make HTTP POST request to server
-    this.http.post<{ message: string, document: Document }>('http://localhost:4000/documents',
+    this.http.post<{ message: string, document: Document }>(this.apiUrl + 'documents',
       document,
       { headers: headers })
       .subscribe(
@@ -78,7 +79,7 @@ export class DocumentService {
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
   
     // Send PUT request to update document in the database
-    this.http.put(`http://localhost:4000/documents/${originalDocument.id}`, newDocument, { headers })
+    this.http.put(`${this.apiUrl}$documents/${originalDocument.id}`, newDocument, { headers })
       .subscribe({
         next: () => {
           this.documents[index] = newDocument;
@@ -109,7 +110,7 @@ export class DocumentService {
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
   
     // Send DELETE request to delete the document from the database
-    this.http.delete(`http://localhost:4000/documents/${document.id}`, { headers })
+    this.http.delete(`${this.apiUrl}documents/${document.id}`, { headers })
       .subscribe(
         {
           next: () => {

@@ -10,6 +10,7 @@ export class ContactService {
   contacts: Contact[] = [];
   contact: Contact;
   maxContactId: number;
+  apiUrl: string = "http://localhost:4000/";
 
   contactListChangedEvent = new Subject<Contact[]>();
   contactSelectedEvent = new Subject<Contact>();
@@ -20,7 +21,7 @@ export class ContactService {
   }
 
   getContacts() {
-    this.http.get<Contact[]>('http://localhost:4000/contacts')
+    this.http.get<Contact[]>( this.apiUrl + 'contacts')
     .subscribe({
       next: (contacts: Contact[]) => {
         // Sorting function
@@ -61,7 +62,7 @@ export class ContactService {
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
   
     // Make HTTP POST request to server
-    this.http.post<{ message: string, contact: Contact }>('http://localhost:4000/contacts',
+    this.http.post<{ message: string, contact: Contact }>( this.apiUrl + 'contacts',
       contact,
       { headers: headers })
       .subscribe(
@@ -105,7 +106,7 @@ export class ContactService {
   
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
   
-    this.http.delete(`http://localhost:4000/contacts/${contact.id}`, { headers })
+    this.http.delete(`${this.apiUrl}contacts/${contact.id}`, { headers })
       .subscribe(
         {
           next: () => {
@@ -140,7 +141,7 @@ export class ContactService {
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
   
     // Send PUT request to update contact in the database
-    this.http.put(`http://localhost:4000/contacts/${originalContact.id}`, newContact, { headers })
+    this.http.put(`${this.apiUrl}contacts/${originalContact.id}`, newContact, { headers })
       .subscribe({
         next: () => {
           this.contacts[index] = newContact;

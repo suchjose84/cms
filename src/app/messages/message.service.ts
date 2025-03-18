@@ -9,6 +9,7 @@ import { Subject } from 'rxjs';
 export class MessageService {
   messages: Message[] = [];
   maxMessageId: number;
+  apiUrl: string = 'http://localhost:4000/';
 
   messageListChangedEvent = new Subject<Message[]>();
 
@@ -17,7 +18,7 @@ export class MessageService {
   }
 
   getMessages() {
-    this.http.get<Message[]>('http://localhost:4000/messages/')
+    this.http.get<Message[]>( this.apiUrl + 'messages/')
     .subscribe({
       next: (messages: Message[]) => {
         this.messages = messages;
@@ -45,7 +46,7 @@ export class MessageService {
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
 
     // Make HTTP POST request to server
-    this.http.post<{ msge: string, message: Message }>('http://localhost:4000/messages',
+    this.http.post<{ msge: string, message: Message }>(this.apiUrl + 'messages/',
       message,
       { headers: headers })
       .subscribe(
