@@ -10,7 +10,8 @@ export class ContactService {
   contacts: Contact[] = [];
   contact: Contact;
   maxContactId: number;
-  apiUrl: string = "http://localhost:4000/";
+  // apiUrl: string = "http://localhost:4000/";
+  apiUrl: string = "https://cms-ut9l.onrender.com/";
 
   contactListChangedEvent = new Subject<Contact[]>();
   contactSelectedEvent = new Subject<Contact>();
